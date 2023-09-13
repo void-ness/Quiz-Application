@@ -7,50 +7,62 @@ import { useNavigate } from "react-router-dom";
 
 const Quiz = () => {
     const quesList = useSelector(selectQuestions); //list of all the question ids selected by the user
-    const finishTime = useSelector(selectTotalTime);
-    const dispatch = useDispatch();
     const [quesNo, setQuesNo] = useState(0); // curr question to display
     const quesLen = quesList.length; // total no. of questions
 
+    // the time at which user starts the test
     const [startTime, setStartTime] = useState(new Date());
+
+    // total time needed by the user.
+    const finishTime = useSelector(selectTotalTime);
+
+    // the time by which the test should end
     let endTime = new Date(startTime.getTime() + (finishTime * 60 * 1000));
+    // let endTime = new Date(startTime.getTime() + (10 * 1000)); // the time by which the test should end
 
-    const [leftTime, setLeftTime] = useState();
+    // remaining time user have to complete the test
+    const [time, setTime] = useState({ minutes: finishTime, seconds: 0 });
 
+    const dispatch = useDispatch();
     const navigate = useNavigate();
 
     useEffect(() => {
-        // const timeInterval = setInterval(() => {
-        //     findTimeElapsed();
-        // }, 1000);
+        if (time.minutes + time.seconds > 0) {
+            let currTime = new Date();
+
+            const timer = setTimeout(() => {
+                setTime(findTimeDiff(endTime, currTime));
+            }, 1000);
+
+            return () => clearTimeout(timer);
+        }
+
+        else {
+            handleSubmit();
+        }
     })
 
-    const handleIncrement = () => {
-        setQuesNo((quesNo + 1));
-    }
-
-    const handleDecrement = () => {
-        setQuesNo((quesNo - 1));
+    const handleChange = (change) => {
+        setQuesNo((quesNo + change));
     }
 
     const handleSubmit = () => {
-        // navigate("/results");
-        // findTimeElapsed();
-        // clearInterval(timeInterval);
-        dispatch(updateFinishTime(leftTime))
+        let currTime = new Date();
+        // updating the test finished time
+        dispatch(updateFinishTime(findTimeDiff(currTime, startTime)));
+
+        navigate("/results");
     }
 
-    const findTimeElapsed = () => {
-        let currTime = new Date();
+    const findTimeDiff = (endTime, startTime) => {
+        let diff = endTime - startTime;
 
-        let diff = endTime - currTime;
-
-        let timeLeft = {
+        let timeDiff = {
             minutes: Math.floor(diff / (1000 * 60)),
             seconds: Math.floor((diff / (1000)) % 60),
         }
 
-        setLeftTime(timeLeft);
+        return timeDiff;
     }
 
     return (
@@ -59,18 +71,18 @@ const Quiz = () => {
                 The Quiz starts now!
             </span>
 
-            <Question questionId={quesList[quesNo]} />
+            <Question key={quesNo} questionId={quesList[quesNo]} />
 
-            {quesNo > 0 && <button onClick={() => handleDecrement()}>Prev</button>}
+            {quesNo > 0 && <button onClick={() => handleChange(-1)}>Prev</button>}
 
-            {quesNo + 1 < quesLen && <button onClick={() => handleIncrement()}>Next</button>}
+            {quesNo + 1 < quesLen && <button onClick={() => handleChange(1)}>Next</button>}
 
             {<button onClick={() => handleSubmit()}>Finish Test</button>}
 
-            {leftTime &&
+            {time &&
                 <div>
-                    <span>{leftTime.minutes} minutes</span>
-                    <span>{leftTime.seconds} seconds</span>
+                    <span>{time.minutes} minutes</span>
+                    <span>{time.seconds} seconds</span>
                 </div>
             }
         </div>

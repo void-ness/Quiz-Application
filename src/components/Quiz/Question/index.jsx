@@ -18,12 +18,12 @@ const Question = ({ questionId }) => {
     }, []);
 
     return (
-        <div>
+        <div className="overflow-x-scroll xl:overflow-hidden py-5">
             {
                 ques ? (
                     <MathJax>{`${ques}`}</MathJax>
                 ) : (
-                    <span>invalid question added</span>
+                    <span>Fetching the Questions</span>
                 )
             }
 

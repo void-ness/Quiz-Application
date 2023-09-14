@@ -33,7 +33,7 @@ const Quiz = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (time.minutes + time.seconds > 0) {
+        if (time.minutes + time.seconds > 1) {
             let currTime = new Date();
 
             const timer = setTimeout(() => {
@@ -92,25 +92,31 @@ const Quiz = () => {
     }
 
     return (
-        <div>
-            <span>
-                The Quiz starts now!
-            </span>
+        <div className="pt-5 md:pt-10 w-10/12 mx-auto">
+            <div className="flex justify-between">
+                <span className="font-bold mb-4">
+                    Ques {quesNo + 1}
+                </span>
+
+                {time &&
+                    <div className="font-semibold">
+                        <span>{time.minutes}min {time.seconds}sec</span>
+                        <span></span>
+                    </div>
+                }
+            </div>
 
             <Question key={quesNo} questionId={quesList[quesNo]?.questionId} />
 
-            {quesNo > 0 && <button onClick={() => handleChange(-1)}>Prev</button>}
-
-            {quesNo + 1 < quesLen && <button onClick={() => handleChange(1)}>Next</button>}
-
-            {<button onClick={() => handleSubmit()}>Finish Test</button>}
-
-            {time &&
+            <div className="nav_buttons_container flex justify-between mt-5">
                 <div>
-                    <span>{time.minutes} minutes</span>
-                    <span>{time.seconds} seconds</span>
+                    {quesNo > 0 && <button onClick={() => handleChange(-1)} className="bg-green-900/75 w-fit px-3 py-1 text-white hover:scale-105 mr-2">Prev</button>}
+
+                    {quesNo + 1 < quesLen && <button onClick={() => handleChange(1)} className="bg-green-900/75 w-fit px-3 py-1 text-white hover:scale-105">Next</button>}
                 </div>
-            }
+
+                {<button onClick={() => handleSubmit()} className="bg-green-900 w-fit px-3 py-1 text-white hover:scale-105 mr-2">Finish Test</button>}
+            </div>
         </div>
     )
 };

@@ -5,7 +5,16 @@ export const userSlice = createSlice({
 
   initialState: {
     name: "",
-    questionList: [],
+    questionList: [
+      // {
+      //   questionId: "",
+      //   startTime: "",
+      //   totalTime: {
+      //     minutes: "",
+      //     seconds: "",
+      //   }
+      // }
+    ],
     totalTime: 0,
     finishTime: {
       minutes: "",
@@ -30,10 +39,24 @@ export const userSlice = createSlice({
     updateTotalTime: (state, action) => {
       state.totalTime = action.payload;
     },
+
+    updateTimeSpentonQues: (state, action) => {
+      state.questionList[action.payload.quesNo].totalTime.minutes += action.payload.timeDiff.minutes;
+      state.questionList[action.payload.quesNo].totalTime.seconds += action.payload.timeDiff.seconds;
+    },
+
+    updateStartTimeofQues: (state, action) => {
+      state.questionList[action.payload.quesNo].startTime = action.payload.currTime;
+    }
   },
 })
 
-export const { updateName, updateQues, updateTotalTime, updateFinishTime } = userSlice.actions
+export const {
+  updateName,
+  updateQues,
+  updateTotalTime, updateFinishTime,
+  updateTimeSpentonQues, updateStartTimeofQues
+} = userSlice.actions
 
 export const selectUser = (state) => state.user.name
 export const selectQuestions = (state) => state.user.questionList

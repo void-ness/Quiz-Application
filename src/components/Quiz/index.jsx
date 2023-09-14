@@ -2,7 +2,13 @@ import React, { useEffect, useState } from "react";
 import Question from "./Question";
 
 import { useDispatch, useSelector } from "react-redux";
-import { selectQuestions, selectTotalTime, updateFinishTime } from "../../features/user/userSlice";
+import {
+    selectQuestions,
+    selectTotalTime,
+    updateFinishTime,
+    updateStartTimeofQues,
+    updateTimeSpentonQues
+} from "../../features/user/userSlice";
 import { useNavigate } from "react-router-dom";
 
 const Quiz = () => {
@@ -38,19 +44,39 @@ const Quiz = () => {
         }
 
         else {
-            handleSubmit();
+            alert("Your time is up, please submit the test!");
         }
     })
 
     const handleChange = (change) => {
+        let currTime = new Date();
+        let quesStartTime = quesList[quesNo].startTime;
+
+        if (quesStartTime === "") {
+            quesStartTime = startTime;
+        }
+
+        let timeDiff = findTimeDiff(currTime, quesStartTime);
+        dispatch(updateTimeSpentonQues({ quesNo, timeDiff }));
+
         setQuesNo((quesNo + change));
+
+        dispatch(updateStartTimeofQues({ quesNo: quesNo + change, currTime }))
     }
 
     const handleSubmit = () => {
         let currTime = new Date();
+        let quesStartTime = quesList[quesNo].startTime;
+
+        if (quesStartTime === "") {
+            quesStartTime = startTime;
+        }
+
+        let timeDiff = findTimeDiff(currTime, quesStartTime);
+        dispatch(updateTimeSpentonQues({ quesNo: quesNo, timeDiff }));
+
         // updating the test finished time
         dispatch(updateFinishTime(findTimeDiff(currTime, startTime)));
-
         navigate("/results");
     }
 
@@ -71,7 +97,7 @@ const Quiz = () => {
                 The Quiz starts now!
             </span>
 
-            <Question key={quesNo} questionId={quesList[quesNo]} />
+            <Question key={quesNo} questionId={quesList[quesNo]?.questionId} />
 
             {quesNo > 0 && <button onClick={() => handleChange(-1)}>Prev</button>}
 

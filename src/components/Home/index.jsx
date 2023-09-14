@@ -11,16 +11,31 @@ const Home = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
+    const findQues = (ques, quesList) => {
+        for (let i = 0; i < quesList.length; i++) {
+            if (quesList[i].questionId === ques) return true;
+        }
+        return false;
+    }
+
     const handleCheckBox = (ques) => {
         let updatedQuesList = quesList;
 
-        if (updatedQuesList.includes(ques) === false) {
-            updatedQuesList.push(ques);
+        if (findQues(ques, updatedQuesList) === false) {
+            let updatedQues = {
+                questionId: ques,
+                startTime: "",
+                totalTime: {
+                    minutes: 0,
+                    seconds: 0,
+                }
+            }
+            updatedQuesList.push(updatedQues);
         }
 
         else {
             updatedQuesList = updatedQuesList.filter((currQues) => {
-                return (currQues !== ques)
+                return (currQues.questionId !== ques)
             })
         }
 

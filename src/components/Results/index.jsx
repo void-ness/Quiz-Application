@@ -8,21 +8,27 @@ const Results = () => {
     const quesList = useSelector(selectQuestions);
 
     return (
-        <div>
-            <span>Thanks for giving this test. Here are your results</span>
-            <span>Name: {name}</span>
-            <span>Time Taken: {time.minutes} Minutes & {time.seconds} Seconds</span>
+        <div className="pt-10 flex flex-col w-10/12 sm:w-1/2 mx-auto text-lg">
+            <span className="font-bold text-2xl">Results</span>
 
-            {
-                quesList.map((ques, ind) => {
-                    return (
-                        <div key={ind}>
-                            <span>QuesId: {ques.questionId}</span>
-                            <span>Time Taken: {ques.totalTime.minutes} Minutes & {ques.totalTime.seconds} seconds</span>
-                        </div>
-                    )
-                })
-            }
+            <div className="bg-green-400/70 flex flex-col p-2 my-2 shadow-xl">
+                <span className="">Name: <b>{name}</b></span>
+                <span>Time Taken: <b>{time.minutes}min {time.seconds}sec</b></span>
+            </div>
+
+            <div className="my-2 bg-green-500/30 p-2 shadow-2xl">
+                {
+                    quesList.map((ques, ind) => {
+                        return (
+                            <div key={ind} className="flex flex-col my-2">
+                                <span><b>QuesId:</b> {ques.questionId}</span>
+                                <span><b>Time Taken:</b> {ques.totalTime.minutes}min {ques.totalTime.seconds}sec</span>
+                            </div>
+                        )
+                    })
+                }
+            </div>
+
         </div>
     );
 };

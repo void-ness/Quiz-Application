@@ -15,6 +15,11 @@ const Quiz = () => {
     const quesList = useSelector(selectQuestions); //list of all the question ids selected by the user
     const [quesNo, setQuesNo] = useState(0); // curr question to display
     const quesLen = quesList.length; // total no. of questions
+    const quesNoList = [];
+
+    for (let i = 1; i <= quesLen; i++) {
+        quesNoList.push(i);
+    }
 
     // the time at which user starts the test
     const [startTime, setStartTime] = useState(new Date());
@@ -48,7 +53,7 @@ const Quiz = () => {
         }
     })
 
-    const handleChange = (change) => {
+    const handleChange = (updatedInd) => {
         let currTime = new Date();
         let quesStartTime = quesList[quesNo].startTime;
 
@@ -59,9 +64,9 @@ const Quiz = () => {
         let timeDiff = findTimeDiff(currTime, quesStartTime);
         dispatch(updateTimeSpentonQues({ quesNo, timeDiff }));
 
-        setQuesNo((quesNo + change));
+        setQuesNo(updatedInd);
 
-        dispatch(updateStartTimeofQues({ quesNo: quesNo + change, currTime }))
+        dispatch(updateStartTimeofQues({ quesNo: updatedInd, currTime }))
     }
 
     const handleSubmit = () => {
@@ -93,7 +98,19 @@ const Quiz = () => {
 
     return (
         <div className="pt-5 md:pt-10 w-10/12 mx-auto">
-            <div className="flex justify-between">
+            <div>
+                {
+                    quesNoList.map((quesInd) => {
+                        return (
+                            <button
+                                className={`${quesInd === quesNo + 1 ? "bg-green-400/75" : "bg-green-900/75"} w-fit px-3 py-1 mr-2 text-white hover:scale-105`}
+                                onClick={() => handleChange(quesInd - 1)}>{quesInd}</button>
+                        )
+                    })
+                }
+            </div>
+
+            <div className="flex justify-between mt-5">
                 <span className="font-bold mb-4">
                     Ques {quesNo + 1}
                 </span>
@@ -110,9 +127,9 @@ const Quiz = () => {
 
             <div className="nav_buttons_container flex justify-between mt-5">
                 <div>
-                    {quesNo > 0 && <button onClick={() => handleChange(-1)} className="bg-green-900/75 w-fit px-3 py-1 text-white hover:scale-105 mr-2">Prev</button>}
+                    {quesNo > 0 && <button onClick={() => handleChange(quesNo - 1)} className="bg-green-900/75 w-fit px-3 py-1 text-white hover:scale-105 mr-2">Prev</button>}
 
-                    {quesNo + 1 < quesLen && <button onClick={() => handleChange(1)} className="bg-green-900/75 w-fit px-3 py-1 text-white hover:scale-105">Next</button>}
+                    {quesNo + 1 < quesLen && <button onClick={() => handleChange(quesNo + 1)} className="bg-green-900/75 w-fit px-3 py-1 text-white hover:scale-105">Next</button>}
                 </div>
 
                 {<button onClick={() => handleSubmit()} className="bg-green-900 w-fit px-3 py-1 text-white hover:scale-105 mr-2">Finish Test</button>}

@@ -43,6 +43,11 @@ export const userSlice = createSlice({
     updateTimeSpentonQues: (state, action) => {
       state.questionList[action.payload.quesNo].totalTime.minutes += action.payload.timeDiff.minutes;
       state.questionList[action.payload.quesNo].totalTime.seconds += action.payload.timeDiff.seconds;
+
+      if (state.questionList[action.payload.quesNo].totalTime.seconds >= 60) {
+        state.questionList[action.payload.quesNo].totalTime.seconds -= 60;
+        state.questionList[action.payload.quesNo].totalTime.minutes += 1;
+      }
     },
 
     updateStartTimeofQues: (state, action) => {

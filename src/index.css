@@ -7,3 +7,9 @@
     padding: 0;
     box-sizing: border-box;
 }
+
+body {
+    width: 100vw;
+    height: 100vh;
+    background-image: linear-gradient(to top right, rgb(48, 104, 58), rgb(236, 255, 162));
+}
